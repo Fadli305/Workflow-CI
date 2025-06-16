@@ -1,8 +1,6 @@
 import argparse
 import os
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 import joblib
 import mlflow
 from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
@@ -10,7 +8,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import (
     accuracy_score, precision_score, recall_score,
-    f1_score, confusion_matrix
+    f1_score
 )
 
 # --- Argument Parsing ---
@@ -77,25 +75,12 @@ for model_name, config in models.items():
         mlflow.log_metric("f1_score", f1)
         mlflow.log_metric("cv_accuracy", cv_acc)
 
-        # Confusion Matrix
-        cm = confusion_matrix(y_test, y_pred)
-        plt.figure(figsize=(5, 4))
-        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
-        plt.title(f"Confusion Matrix - {model_name}")
-        plt.xlabel("Predicted")
-        plt.ylabel("Actual")
-
+        # Save & log model
         model_dir = f"saved_models/{model_name}"
         os.makedirs(model_dir, exist_ok=True)
-        cm_path = f"{model_dir}/confusion_matrix.png"
-        plt.savefig(cm_path)
-        plt.close()
-
-        # Save & log model + artefak
         model_path = f"{model_dir}/model.pkl"
         joblib.dump(best_model, model_path)
 
         mlflow.log_artifact(model_path, artifact_path=f"best_model_{model_name}")
-        mlflow.log_artifact(cm_path, artifact_path=f"best_model_{model_name}")
 
         print(f"✅ {model_name} done - Acc: {acc:.4f}, F1: {f1:.4f}, CV Acc: {cv_acc:.4f}")

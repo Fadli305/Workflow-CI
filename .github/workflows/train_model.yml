@@ -14,15 +14,16 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Install dependencies
-      run: |
-        pip install mlflow
-        conda --version
-        conda create -n mlflow-env -y python=3.10
-        conda install -n mlflow-env -y pip
-        conda run -n mlflow-env pip install -r MLProject/requirements.txt
+    - name: Install MLflow
+      run: pip install mlflow
 
-    - name: Run MLflow Project using conda run
+    - name: Run MLflow Project
+      run: mlflow run ./MLProject
+
+    - name: Commit & Push saved models to GitHub
       run: |
         cd MLProject
-        MLFLOW_RUN_SUBCOMMAND="conda run -n mlflow-env python" mlflow run . --env-manager=local
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git add saved_models || true
+        git diff --cached --quiet || (git commit -m "Add trained models from CI run" && git push origin main)
