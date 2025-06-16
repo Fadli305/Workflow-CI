@@ -17,28 +17,33 @@ df = pd.read_csv("dataset_preprocessing/personality_dataset_preprocessing.csv")
 X = df.drop("Personality", axis=1)
 y = df["Personality"]
 
+# Train-test split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Start MLflow run
+# Buat direktori simpan model
+model_dir = "saved_models/logistic_regression"
+os.makedirs(model_dir, exist_ok=True)
+
+# MLflow Tracking
 with mlflow.start_run() as run:
-    model_name = "LogisticRegression"
     model = make_pipeline(StandardScaler(), LogisticRegression(max_iter=500))
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
+    # Evaluasi
     acc = accuracy_score(y_test, y_pred)
     prec = precision_score(y_test, y_pred, average="weighted")
     rec = recall_score(y_test, y_pred, average="weighted")
     f1 = f1_score(y_test, y_pred, average="weighted")
 
-    # Logging
-    mlflow.log_param("model_type", model_name)
+    # Logging ke MLflow
+    mlflow.log_param("model_type", "Logistic Regression with Scaler")
     mlflow.log_metric("accuracy", acc)
     mlflow.log_metric("precision", prec)
     mlflow.log_metric("recall", rec)
     mlflow.log_metric("f1_score", f1)
 
-    # Log model
+    # Signature & contoh input
     signature = infer_signature(X_train, model.predict(X_train))
     input_example = X_train.head(5)
     mlflow.sklearn.log_model(
@@ -48,6 +53,11 @@ with mlflow.start_run() as run:
         input_example=input_example
     )
 
+    # Simpan model manual
+    model_path = f"{model_dir}/model.pkl"
+    joblib.dump(model, model_path)
+    mlflow.log_artifact(model_path)
+
     # Confusion matrix
     cm = confusion_matrix(y_test, y_pred)
     plt.figure(figsize=(6, 4))
@@ -55,12 +65,10 @@ with mlflow.start_run() as run:
     plt.title("Confusion Matrix")
     plt.xlabel("Predicted")
     plt.ylabel("Actual")
-
-    # Save & log artifact
-    model_dir = f"saved_models/{model_name}"
-    os.makedirs(model_dir, exist_ok=True)
     cm_path = f"{model_dir}/confusion_matrix.png"
     plt.savefig(cm_path)
     plt.close()
 
     mlflow.log_artifact(cm_path)
+
+    print(f"✅ Model & metrics logged. Saved to: {model_dir}")
