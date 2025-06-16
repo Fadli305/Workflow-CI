@@ -27,12 +27,12 @@ jobs:
     - name: Run MLflow Project
       run: |
         cd MLProject
-        mlflow run .
+        mlflow run . --env-manager=local
 
-    - name: Push saved models to GitHub
+    - name: Commit & Push saved models to GitHub
       run: |
+        cd MLProject
         git config user.name github-actions
         git config user.email github-actions@github.com
-        git add MLProject/saved_models
-        git commit -m "Add trained models from CI run"
-        git push origin main
+        git add saved_models || true
+        git diff --cached --quiet || (git commit -m "Add trained models from CI run" && git push origin main)
