@@ -46,6 +46,8 @@ models = {
 }
 
 # --- Train & Log ---
+os.makedirs("saved_models", exist_ok=True)  # root folder to commit later
+
 for model_name, config in models.items():
     with mlflow.start_run(run_name=model_name):
         print(f"\n🔍 Tuning {model_name}...")
@@ -83,13 +85,14 @@ for model_name, config in models.items():
         plt.xlabel("Predicted")
         plt.ylabel("Actual")
 
-        os.makedirs(f"saved_models/{model_name}", exist_ok=True)
-        cm_path = f"saved_models/{model_name}/confusion_matrix.png"
+        model_dir = f"saved_models/{model_name}"
+        os.makedirs(model_dir, exist_ok=True)
+        cm_path = f"{model_dir}/confusion_matrix.png"
         plt.savefig(cm_path)
         plt.close()
 
         # Save & log model + artefak
-        model_path = f"saved_models/{model_name}/model.pkl"
+        model_path = f"{model_dir}/model.pkl"
         joblib.dump(best_model, model_path)
 
         mlflow.log_artifact(model_path, artifact_path=f"best_model_{model_name}")
