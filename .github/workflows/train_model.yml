@@ -33,7 +33,8 @@ jobs:
         cd MLProject
         git config user.name github-actions
         git config user.email github-actions@github.com
-        git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN}}@github.com/${{ github.repository }}
+        git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}
         git add saved_models || true
-        git diff --cached --quiet || \
+        git diff --cached --quiet || echo "No changes to commit" || \
           (git commit -m "Add trained models from CI run" && git push origin main)
+
