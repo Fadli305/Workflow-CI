@@ -25,9 +25,7 @@ jobs:
       run: pip install mlflow
 
     - name: Run MLflow Project
-      run: |
-        cd MLProject
-        mlflow run . --env-manager=local
+      run: mlflow run ./MLProject --env-manager=local
 
     - name: Commit & Push saved models to GitHub
       run: |

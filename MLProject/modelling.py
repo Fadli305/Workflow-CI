@@ -15,7 +15,7 @@ from sklearn.metrics import (
 
 # --- Argument Parsing ---
 parser = argparse.ArgumentParser()
-parser.add_argument("--dataset_path", type=str, default="dataset_preprocessing.csv")
+parser.add_argument("--dataset_path", type=str, default="dataset_preprocessing/personality_dataset_preprocessing.csv")
 args = parser.parse_args()
 
 # --- Load Dataset ---
