@@ -50,4 +50,18 @@ with mlflow.start_run() as run:
     plt.ylabel("Actual")
     cm_path = "confusion_matrix.png"
     plt.savefig(cm_path)
+
+    # Simpan model & confusion matrix ke folder saved_models
+    model_dir = f"saved_models/{model_name}"
+    os.makedirs(model_dir, exist_ok=True)
+
+    # Simpan model
+    model_path = f"{model_dir}/model.pkl"
+    joblib.dump(best_model, model_path)
+
+    # Simpan confusion matrix
+    cm_path = f"{model_dir}/confusion_matrix.png"
+    plt.savefig(cm_path)
+    plt.close() 
+
     mlflow.log_artifact(cm_path)
