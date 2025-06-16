@@ -3,6 +3,5 @@ numpy
 scikit-learn
 matplotlib
 seaborn
-mlflow
-dagshub
+mlflow==2.19.0
 joblib
