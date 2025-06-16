@@ -27,7 +27,7 @@ jobs:
     - name: Run MLflow Project
       run: |
         cd MLProject
-        mlflow run . --env-manager=local
+        mlflow run . --env-manager=local --force
 
     - name: Commit & Push saved models to GitHub
       run: |
