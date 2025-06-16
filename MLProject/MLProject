@@ -1,0 +1,9 @@
+name: ci-personality-classifier
+
+conda_env: conda.yaml
+
+entry_points:
+  main:
+    parameters:
+      dataset_path: {type: str, default: "dataset_preprocessing.csv"}
+    command: "python modelling.py --dataset_path {dataset_path}"
