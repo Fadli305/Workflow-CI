@@ -15,7 +15,7 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from mlflow.models.signature import infer_signature
 
 # Load data mentah (belum di-preprocess)
-df = pd.read_csv("dataset/personality_dataset.csv")
+df = pd.read_csv("dataset_preprocessing/personality_dataset_preprocessing.csv")
 X = df.drop("Personality", axis=1)
 y = df["Personality"]
 
