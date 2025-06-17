@@ -39,7 +39,7 @@ jobs:
         git config user.email github-actions@github.com
         git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}
 
-        # Force add all artefak hasil training
+        # Force add all artefak hasil dari training
         git add -f saved_models || true
 
         git status
