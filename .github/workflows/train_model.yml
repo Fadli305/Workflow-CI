@@ -34,20 +34,20 @@ jobs:
 
     - name: Debug token access
       run: echo "${{ secrets.GH_TOKEN }}" | wc -c
-      
+
     - name: Commit & Push trained models
       run: |
         cd MLProject
         git config user.name github-actions
         git config user.email github-actions@github.com
+
+        # Ganti remote origin agar pakai token GH_TOKEN milikmu
         git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}
 
-        # Force add all artefak hasil dari training
         git add -f saved_models || true
-
-        git status
         git diff --cached --quiet || (
-          echo "📦 Commit & push model hasil training..."
+          echo "Commit & push model hasil training..."
           git commit -m "Add trained models from CI run"
           git push origin main
         )
+
