@@ -32,6 +32,9 @@ jobs:
         echo "Isi folder MLProject/saved_models:"
         ls -R MLProject/saved_models || echo "❌ Folder tidak ditemukan"
 
+    - name: Debug token access
+      run: echo "${{ secrets.GH_TOKEN }}" | wc -c
+      
     - name: Commit & Push trained models
       run: |
         cd MLProject
