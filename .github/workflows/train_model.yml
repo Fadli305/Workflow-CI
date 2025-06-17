@@ -41,8 +41,8 @@ jobs:
         git config user.name github-actions
         git config user.email github-actions@github.com
 
-        # Ganti remote origin agar pakai token GH_TOKEN milikmu
-        git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}
+        
+        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
         git add -f saved_models || true
         git diff --cached --quiet || (
@@ -50,4 +50,5 @@ jobs:
           git commit -m "Add trained models from CI run"
           git push origin main
         )
+
 
