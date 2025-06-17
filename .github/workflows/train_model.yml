@@ -19,8 +19,7 @@ jobs:
         python-version: '3.10'
 
     - name: Install dependencies
-      run: |
-        pip install -r MLProject/requirements.txt
+      run: pip install -r MLProject/requirements.txt
 
     - name: Run MLflow project
       run: |
@@ -28,13 +27,24 @@ jobs:
         export MLFLOW_TRACKING_URI=file:./mlruns
         mlflow run . --env-manager=local
 
+    - name: Debug folder saved_models
+      run: |
+        echo "Isi folder MLProject/saved_models:"
+        ls -R MLProject/saved_models || echo "❌ Folder tidak ditemukan"
+
     - name: Commit & Push trained models
       run: |
         cd MLProject
         git config user.name github-actions
         git config user.email github-actions@github.com
         git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}
-        git add saved_models || true
-        git diff --cached --quiet || echo "No changes to commit" || \
-          (git commit -m "Add trained models from CI run" && git push origin main)
 
+        # Force add all artefak hasil training
+        git add -f saved_models || true
+
+        git status
+        git diff --cached --quiet || (
+          echo "📦 Commit & push model hasil training..."
+          git commit -m "Add trained models from CI run"
+          git push origin main
+        )
